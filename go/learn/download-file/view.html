@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>download file</title>
+        <script>
+            function Bitch() {
+                var self = this;
+                var $ul = document.getElementById("list-files");
+
+                var renderData = function(res) {
+                    res.forEach(function (each) {
+                        var $li = document.createElement("li");
+                        var $a = document.createElement("a");
+
+                        $li.innerText = "download ";
+                        $li.appendChild($a);
+                        $ul.appendChild($li);
+
+                        $a.href = "/download?path=" + encodeURI(each.path);
+                        $a.innerText = each.filename;
+                        $a.target = "_blank";
+                    });
+                };
+
+                var getAllFilesList = function() {
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("GET", "/list-files");
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState == 4 && xhr.status == 200) {
+                            var json = JSON.parse(xhr.responseText);
+                            renderData(json);
+                        }
+                    };
+                    xhr.send();
+                };
+
+                self.init = function() {
+                    getAllFilesList();
+                };
+            };
